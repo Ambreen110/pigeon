@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Add Cup{% endblock %}
+{% block content %}
+<h2>Add Cup</h2>
+<form method="POST" action="{{ url_for('admin.add_cup') }}">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+<br><br><br>
+{% endblock %}

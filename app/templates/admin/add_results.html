@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+{% block title %}Add Results{% endblock %}
+{% block content %}
+<h2>Add Results</h2>
+
+<!-- Form for Adding Results -->
+<form method="POST" action="{{ url_for('admin.add_results') }}" enctype="multipart/form-data" class="add-results-form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.competition_id.label }}<br>
+        {{ form.competition_id }}
+    </div>
+    <div id="participants">
+        {% for participant in form.participants %}
+        <div class="participant-entry" data-index="0">
+            <input id="participants-0-csrf_token" name="participants-0-csrf_token" type="hidden">
+            <div>
+                <label for="participants-0-name">Participant Name</label><br>
+                <input id="participants-0-name" name="participants-0-name" type="text" required placeholder="Enter participant name">
+            </div>
+            {% for i in range(12) %}
+            <div>
+                <label for="participants-0-landing_times{{ i+1 }}">Pigeon {{ i + 1 }} Time</label><br>
+                <input id="participants-0-landing_times{{ i+1 }}" name="participants-0-landing_times{{ i+1 }}" type="time" required title="Select time for Pigeon {{ i + 1 }}">
+            </div>
+            {% endfor %}
+            <div>
+                <label for="participants-0-profile_pic">Profile Picture</label><br>
+                <input id="participants-0-profile_pic" name="participants-0-profile_pic" type="file" accept="image/*">
+            </div>
+            <hr>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="button-container">
+        <button type="button" class="remove-button" onclick="removeParticipant(this)">Remove</button>
+        <button type="button" id="add-participant" class="add-button">Add Another Participant</button>
+        <div>
+            {{ form.submit(class='submit-button') }}  <!-- Assuming form.submit renders a button -->
+        </div>
+    </div>
+    
+</form>
+
+<!-- Existing Participants Section -->
+<h3>Existing Participants</h3>
+<div class="table-container">
+    <table class="existing-participants-table">
+        <thead>
+            <tr>
+                <th>PP</th>
+                <th>Name</th>
+                {% for i in range(1, 13) %}
+                <th>P{{ i }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="existing-participants">
+            <!-- This will be populated by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // JavaScript for adding/removing participants and handling existing participants
+
+    document.getElementById('add-participant').addEventListener('click', function() {
+        var participantEntries = document.querySelectorAll('.participant-entry');
+        var newIndex = participantEntries.length;
+
+        var template = `
+            <div class="participant-entry" data-index="${newIndex}">
+                <input id="participants-${newIndex}-csrf_token" name="participants-${newIndex}-csrf_token" type="hidden">
+                <div>
+                    <label for="participants-${newIndex}-name">Participant Name</label><br>
+                    <input id="participants-${newIndex}-name" name="participants-${newIndex}-name" type="text" required placeholder="Enter participant name">
+                </div>
+                ${[...Array(12).keys()].map(i => `
+                <div>
+                    <label for="participants-${newIndex}-landing_times${i + 1}">Pigeon ${i + 1} Time</label><br>
+                    <input id="participants-${newIndex}-landing_times${i + 1}" name="participants-${newIndex}-landing_times${i + 1}" type="time" required title="Select time for Pigeon ${i + 1}">
+                </div>`).join('')}
+                <div>
+                    <label for="participants-${newIndex}-profile_pic">Profile Picture</label><br>
+                    <input id="participants-${newIndex}-profile_pic" name="participants-${newIndex}-profile_pic" type="file" accept="image/*">
+                </div>
+                <button type="button" onclick="removeParticipant(this)">Remove</button>
+                <hr>
+            </div>
+        `;
+        document.getElementById('participants').insertAdjacentHTML('beforeend', template);
+    });
+
+    function removeParticipant(button) {
+        button.parentElement.remove();
+    }
+
+    document.getElementById('competition_id').addEventListener('change', function() {
+        var selectedCompetitionId = this.value;
+        var participants = {{ competitions|tojson }};
+
+        var existingParticipants = participants.find(comp => comp.id == selectedCompetitionId).participants;
+
+        var tbody = document.getElementById('existing-participants');
+        tbody.innerHTML = '';
+
+        existingParticipants.forEach(function(participant) {
+            var row = document.createElement('tr');
+
+            var profilePicCell = document.createElement('td');
+            if (participant.profile_pic) {
+                var img = document.createElement('img');
+                img.src = "{{ url_for('static', filename='uploads/') }}" + participant.profile_pic;
+                img.className = 'profile-pic';
+                profilePicCell.appendChild(img);
+            }
+            row.appendChild(profilePicCell);
+
+            var nameCell = document.createElement('td');
+            nameCell.textContent = participant.name;
+            row.appendChild(nameCell);
+
+            for (var i = 0; i < 12; i++) {
+                var timeCell = document.createElement('td');
+                timeCell.textContent = participant[`landing_times${i + 1}`] || 'None';
+                row.appendChild(timeCell);
+            }
+
+            var actionsCell = document.createElement('td');
+            var editForm = document.createElement('form');
+            editForm.method = 'POST';
+            editForm.action = "{{ url_for('admin.update_participant', participant_id=0) }}".replace('0', participant.id);
+            editForm.enctype = 'multipart/form-data';
+            var hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'competition_id';
+            hiddenInput.value = selectedCompetitionId;
+            editForm.appendChild(hiddenInput);
+            var editButton = document.createElement('button');
+            editButton.type = 'submit';
+            editButton.textContent = 'Edit';
+            editForm.appendChild(editButton);
+            actionsCell.appendChild(editForm);
+
+            var deleteForm = document.createElement('form');
+            deleteForm.method = 'POST';
+            deleteForm.action = "{{ url_for('admin.delete_participant', participant_id=0) }}".replace('0', participant.id);
+            var deleteHiddenInput = document.createElement('input');
+            deleteHiddenInput.type = 'hidden';
+            deleteHiddenInput.name = 'competition_id';
+            deleteHiddenInput.value = selectedCompetitionId;
+            deleteForm.appendChild(deleteHiddenInput);
+            var deleteButton = document.createElement('button');
+            deleteButton.type = 'submit';
+            deleteButton.textContent = 'Delete';
+            deleteButton.style.color = 'red'; // Style delete button red
+            deleteForm.appendChild(deleteButton);
+            actionsCell.appendChild(deleteForm);
+
+            row.appendChild(actionsCell);
+            tbody.appendChild(row);
+        });
+    });
+
+    // Trigger change event on page load to show existing participants for the default competition
+    document.getElementById('competition_id').dispatchEvent(new Event('change'));
+</script>
+{% endblock %}

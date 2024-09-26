@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Competition Details - {{ competition.name }}{% endblock %}
+{% block content %}
+<h2 class="competition-title">{{ competition.name }} - Start time: {{ competition.start_date.strftime('%Y-%m-%d %H:%M') }}</h2>
+
+<div class="competition-info">
+    <img class="logo-img" src="{{ competition.poster }}" alt="Poster">
+    <div class="dates">
+        {% for date in competition.dates %}
+            <span class="date">{{ date }}</span>
+        {% endfor %}
+    </div>
+</div>
+
+{% set ns = namespace(max_times=0) %}
+{% for participant in participants %}
+    {% set times_count = participant.times | length %}
+    {% if times_count > ns.max_times %}
+        {% set ns.max_times = times_count %}
+    {% endif %}
+{% endfor %}
+
+<table class="results-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Profile</th>
+            <th>Pigeons</th>
+            <th>Start Time</th>
+            {% for i in range(ns.max_times) %}
+                <th>P {{ i + 1 }}</th>
+            {% endfor %}
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for participant in participants|sort(attribute='total_time', reverse=True) %}
+            <tr>
+                <td>{{ participant.name }}</td>
+                <td>
+                    {% if participant.profile_pic %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ participant.profile_pic) }}" alt="Profile Pic" class="profile-pic">
+                    {% else %}
+                    <img class='profile-pic' src="{{ url_for('static', filename='images/BMC.png') }}" alt="Profile Picture">
+                    {% endif %}
+                </td>
+                <td>{{ participant.pigeons_count }}</td>
+                <td>{{ competition.start_time.strftime('%H:%M') }}</td>
+                {% set participant_times = participant.times %}
+                {% for time in participant_times %}
+                    <td>{{ time }}</td>
+                {% endfor %}
+                {% for _ in range(ns.max_times - participant_times | length) %}
+                    <td>N/A</td>
+                {% endfor %}
+                <td>{{ participant.total_time }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

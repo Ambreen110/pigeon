@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Most Recent Competition Results</h2>
+{% if most_recent_competition %}
+    <h3>{{ most_recent_competition.name }} ({{ most_recent_competition.start_date }} - {{ most_recent_competition.end_date }})</h3>
+
+    <table id="results-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Profile</th>
+                <th>Pigeons</th>
+                <th>Start Time</th>
+                {% for i in range(max_pigeons) %}
+                    <th>P {{ i + 1 }}</th>
+                {% endfor %}
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in most_recent_competition.participants|sort(attribute='total_time', reverse=False) %}
+                <tr> 
+                    <td>{{ participant.name }}</td>
+                    <td>
+                        {% if participant.profile_pic %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ participant.profile_pic) }}" alt="Profile Pic" class="profile-pic">
+                        {% else %}
+                        <img class='profile-pic' src="{{ url_for('static', filename='images/BMC.png') }}" alt="Profile Picture">
+                        {% endif %}
+                    </td>
+                    <td>{{ pigeon_counts[participant.id] }}</td>
+                    <td>{{ most_recent_competition.start_time.strftime('%H:%M') }}</td> <!-- Display start time -->
+
+                    {% for i in range(max_pigeons) %}
+                        <td>
+                            {% if timings[participant.id][i] %}
+                                {{ timings[participant.id][i] }}
+                            {% else %}
+                                None <!-- Display "None" for missing results -->
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    
+                    <td>{{ participant.total_time }}</td> <!-- Total time will be calculated in the model -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('.day-header').forEach(header => {
+            header.addEventListener('click', function() {
+                var dayIndex = this.getAttribute('data-day');
+                var table = document.getElementById('results-table');
+                var rows = Array.from(table.querySelectorAll('tbody tr'));
+
+                // Hide all day columns except the clicked one
+                table.querySelectorAll('thead th, tbody td').forEach(cell => {
+                    cell.style.display = 'none';
+                });
+                table.querySelectorAll(`thead th:nth-child(${parseInt(dayIndex) + 5}), tbody td:nth-child(${parseInt(dayIndex) + 5})`).forEach(cell => { // Adjust index for new Start Time column
+                    cell.style.display = 'table-cell';
+                });
+                table.querySelectorAll('thead th:nth-child(1), thead th:nth-child(2), thead th:nth-child(3), thead th:nth-child(4), thead th:last-child, tbody td:nth-child(1), tbody td:nth-child(2), tbody td:nth-child(3), tbody td:nth-child(4), tbody td:last-child').forEach(cell => {
+                    cell.style.display = 'table-cell';
+                });
+
+                // Sort rows based on the clicked day
+                rows.sort((rowA, rowB) => {
+                    var cellA = rowA.querySelector(`td:nth-child(${parseInt(dayIndex) + 5})`).innerText.trim(); // Adjust index for new Start Time column
+                    var cellB = rowB.querySelector(`td:nth-child(${parseInt(dayIndex) + 5})`).innerText.trim();
+
+                    var timeA = cellA ? parseFloat(cellA) : Infinity;
+                    var timeB = cellB ? parseFloat(cellB) : Infinity;
+                    
+                    return timeA - timeB;
+                });
+                
+                // Append sorted rows back to the table body
+                var tbody = table.querySelector('tbody');
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+            });
+        });
+    </script>
+{% else %}
+    <p>No recent competitions found.</p>
+{% endif %}
+{% endblock %}

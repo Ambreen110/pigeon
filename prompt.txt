@@ -1,0 +1,25 @@
+Title: Pigeon Competition Website
+
+Pages:
+1) Home Page:
+    - The home page will have the following features:
+        - A title and banner
+        - A navigation bar containing the Championship CUPs (region based) links.
+        - Most recent competition results.
+        - A footer with the copyright information.
+
+2) Championship List Page (for each CUP):
+    - page will have the following features:
+    - List of competitions related to that CUP.
+    - Competition Poster, Name, Start - End Data, Top 5 ranked teams.
+
+3) Competition Detail Page. 
+    - When clicked on any competition. It should display the complete list of participants rank wise. 
+    - participant rank, profile pic (optional), name, number of pigeons, [time on each dates] (could be multiple columns), Total time
+
+4) User/Password Secured Admin Panel:
+    From where the admin can enter the competition data.
+    - Add/Remove/Update a new CUP
+    - Add/Remove/Update a new competition in a CUP
+    - Add competition results.
+

@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Championship - {{ cup.name }}{% endblock %}
+{% block content %}
+<div class="championship-container">
+    <h2>{{ cup.name }}</h2>
+    <ul class="competition-list">
+        {% for competition in cup.competitions %}
+        <li class="competition-item">
+            <div class="poster-container">
+                <a href="{{ url_for('main.competition_detail', competition_id=competition.id) }}">
+                    <img class="poster" src="{{ competition.poster }}" alt="Poster">
+                </a>
+            </div>
+            <div class="competition-details">
+                <a href="{{ url_for('main.competition_detail', competition_id=competition.id) }}" class="competition-link">
+                    <h3>{{ competition.name }}</h3>
+                    <p>{{ competition.start_date }} - {{ competition.end_date }}</p>
+                </a>
+                <ul class="participant-list">
+                    {% for participant in competition.participants|sort(attribute='total_time', reverse=True) %}
+                    <li class="participant-item"> {{ participant.name }} - {{ participant.total_time }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

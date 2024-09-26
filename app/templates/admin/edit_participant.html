@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}Edit Participant{% endblock %}
+{% block content %}
+<h2>Edit Participant</h2>
+<form method="POST" action="{{ url_for('admin.update_participant', participant_id=participant.id) }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}
+    </div>
+    <div>
+        {% if participant.profile_pic %}
+            <img src="{{ url_for('static', filename='uploads/' + participant.profile_pic) }}" alt="Profile Pic" style="width:50px;height:50px;">
+        {% endif %}
+        {{ form.profile_pic.label }}<br>
+        {{ form.profile_pic() }}
+    </div>
+    <div>
+        {{ form.landing_times1.label }}<br>
+        {{ form.landing_times1() }}
+    </div>
+    <div>
+        {{ form.landing_times2.label }}<br>
+        {{ form.landing_times2() }}
+    </div>
+    <div>
+        {{ form.landing_times3.label }}<br>
+        {{ form.landing_times3() }}
+    </div>
+    <div>
+        {{ form.landing_times4.label }}<br>
+        {{ form.landing_times4() }}
+    </div>
+    <div>
+        {{ form.landing_times5.label }}<br>
+        {{ form.landing_times5() }}
+    </div>
+    <div>
+        {{ form.landing_times6.label }}<br>
+        {{ form.landing_times6() }}
+    </div>
+    <div>
+        {{ form.landing_times7.label }}<br>
+        {{ form.landing_times7() }}
+    </div>
+    <div>
+        {{ form.landing_times8.label }}<br>
+        {{ form.landing_times8() }}
+    </div>
+    <div>
+        {{ form.landing_times9.label }}<br>
+        {{ form.landing_times9() }}
+    </div>
+    <div>
+        {{ form.landing_times10.label }}<br>
+        {{ form.landing_times10() }}
+    </div>
+    <div>
+        {{ form.landing_times11.label }}<br>
+        {{ form.landing_times11() }}
+    </div>
+    <div>
+        {{ form.landing_times12.label }}<br>
+        {{ form.landing_times12() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+<form method="POST" action="{{ url_for('admin.delete_participant', participant_id=participant.id) }}">
+    {{ form.hidden_tag() }}
+    <button type="submit">Delete Participant</button>
+</form>
+{% endblock %}

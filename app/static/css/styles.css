@@ -1,0 +1,275 @@
+/* General Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+}
+
+/* Header Styles */
+h2, h3 {
+    color: #333;
+    text-align: center;
+}
+
+/* General Form Styles */
+.add-results-form {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+input[type="time"],
+input[type="file"],
+select,
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Championship Container */
+.championship-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Competition List */
+.competition-list {
+    list-style: none;
+    padding: 0;
+}
+
+.competition-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.poster-container {
+    flex: 0 0 150px;
+    margin-right: 20px;
+}
+
+.poster {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    transition: transform 0.2s;
+}
+
+.poster:hover {
+    transform: scale(1.05);
+}
+
+.competition-details {
+    flex: 1;
+}
+
+.competition-link {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.2s;
+}
+
+.competition-link:hover {
+    color: #0056b3;
+}
+
+h3 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+p {
+    margin: 5px 0 15px;
+    color: #666;
+}
+
+/* Participant List */
+.participant-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.participant-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.participant-item:last-child {
+    border-bottom: none;
+}
+
+.participant-item {
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+}
+
+/* Table Styles */
+.table-container {
+    width: 100%;
+    margin: 20px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #007BFF;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Profile Picture Styles */
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.remove-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.add-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.submit-button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .championship-container {
+        padding: 20px;
+    }
+
+    .competition-item {
+        flex-direction: column;
+    }
+
+    .poster-container {
+        margin-bottom: 15px;
+        flex: 0 0 100%;
+        text-align: center;
+    }
+
+    .poster {
+        max-width: 70%;
+    }
+
+    h3 {
+        font-size: 1.3em;
+    }
+
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    input[type="text"],
+    input[type="time"],
+    input[type="file"],
+    select {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.6em;
+    }
+
+    .poster {
+        max-width: 90%;
+    }
+
+    h3 {
+        font-size: 1.2em;
+    }
+}
